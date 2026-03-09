@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const logger = requie("./logger");
+const logger = require("./logger");
 const config = require("./config");
 
 const connectDB = async () => {
