@@ -2,8 +2,8 @@ const User = require("../users/user.model");
 const logger = require("../utils/logger");
 
 const register = async (req, res) => {
+  const { fullName, email, password } = req.body;
   const user = await User.create({ fullName, email, password });
-
   logger.info("User registered", { userID: user._id });
 
   res.json({

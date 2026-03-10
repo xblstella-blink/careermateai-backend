@@ -1,4 +1,4 @@
-const { Route } = require("express");
+const { Router } = require("express");
 const authRouter = require("./auth/auth.routes");
 
 const v1Router = Router();

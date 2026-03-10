@@ -5,6 +5,7 @@ const rateLimit = require("./middleware/global/rateLimit");
 const cors = require("cors");
 const setUpSwagger = require("./utils/swagger/index");
 const errorHandler = require("./middleware/error/error.middleware");
+const v1Router = require("./routes");
 
 const app = express();
 app.use(helmet());
