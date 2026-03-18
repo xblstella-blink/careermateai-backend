@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema(
     goal: { type: String, trim: true },
     avatar: { type: String },
     displayName: { type: String, trim: true },
+    resetCode: { type: String },
+    resetCodeExpiry: { type: Date },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
+    passwordHistory: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
