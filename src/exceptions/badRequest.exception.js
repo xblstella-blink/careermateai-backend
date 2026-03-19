@@ -1,9 +1,9 @@
 const AppException = require("./app.exception");
 
-class badRequestException extends AppException {
+class BadRequestException extends AppException {
   constructor(message = "Bad request", context = {}) {
     super(400, message, context);
   }
 }
 
-module.exports = badRequestException;
+module.exports = BadRequestException;

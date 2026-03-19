@@ -8,6 +8,7 @@ const {
   verifyCodeSchema,
   resetPasswordSchema,
 } = require("./auth.validation");
+const authGuard = require("../middleware/authGuard.middleware");
 
 const authRouter = express.Router();
 
@@ -28,5 +29,10 @@ authRouter.post(
   validate(resetPasswordSchema),
   authController.resetPassword,
 );
-
+authRouter.get("/private", authGuard, (req, res) => {
+  res.json({
+    success: true,
+    message: "this is a private endpoint",
+  });
+});
 module.exports = authRouter;

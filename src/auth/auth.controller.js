@@ -143,7 +143,7 @@ const resetPassword = async (req, res) => {
     user.passwordHistory = user.passwordHistory.slice(-5);
   }
   await user.save();
-  logger.info("Password reset successful", { userId: user._id });
+  logger.info("Password reset successful", { id: user._id });
   res.json({
     success: true,
     message: "Password reset successfully",

@@ -7,8 +7,8 @@ const signAccessToken = (payload) => {
   });
 };
 
-const verifyAcessToken = (token) => {
-  return jwt.verify(token, config.JWT_EXPIRES_IN.SECRET);
+const verifyAccessToken = (token) => {
+  return jwt.verify(token, config.JWT_SECRET);
 };
 
-module.exports = { signAccessToken, verifyAcessToken };
+module.exports = { signAccessToken, verifyAccessToken };

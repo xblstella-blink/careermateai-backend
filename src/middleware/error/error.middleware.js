@@ -8,6 +8,7 @@ const errorHandler = (err, req, res, next) => {
   const message = err.message || "Something unexpected happended";
 
   res.status(status).json({
+    success: false,
     error: {
       message,
       ...(config.NODE_ENV === "dev" && { stack: err.stack }),
