@@ -1,12 +1,11 @@
 const BadRequestException = require("../exceptions/badRequest.exception");
 const NotFoundException = require("../exceptions/notFound.exception");
+const logger = require("../utils/logger");
 const { comparePassword, hashPassword } = require("../utils/password");
 const User = require("./user.model");
 
 const getMe = async (req, res) => {
-  const userId = req.user.id;
-  console.log("req.user", req.user);
-  console.log("userId", userId);
+  const userId = req.user.userId;
   const user = await User.findById(userId).exec();
 
   if (!user) {
@@ -19,17 +18,18 @@ const getMe = async (req, res) => {
 };
 
 const updateMe = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.userId;
   const user = await User.findByIdAndUpdate(userId, req.body, {
     new: true,
     runValidators: true,
   }).exec();
-  res.json({ success: true, data: true });
+  res.json({ success: true, data: user });
 };
 
 const updateMyPassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const userId = req.user.id;
+  const userId = req.user.userId;
+  const user = await User.findById(userId).exec();
   await User.findById(userId).exec();
   if (!user) {
     throw new NotFoundException("User not found");

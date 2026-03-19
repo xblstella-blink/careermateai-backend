@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Student", "Other"],
     },
+    accountType: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
     field: {
       type: String,
       enum: ["FE", "BE"],
@@ -45,6 +50,7 @@ const userSchema = new mongoose.Schema(
       transform(_, ret) {
         delete ret.password;
         delete ret.__v;
+        delete ret.passwordHistory;
       },
     },
   },

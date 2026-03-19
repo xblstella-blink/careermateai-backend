@@ -3,7 +3,7 @@ const { z } = require("zod");
 const emailSchema = z.email("Invalid email format").toLowerCase().trim();
 const passwordSchema = z
   .string()
-  .min(8, "Password muast be at least 8 character")
+  .min(8, "Password must be at least 8 character")
   .regex(/[a-zA-Z]/, "Password must contain at least one letter")
   .regex(/[0-9]/, "Password must contain at least one number");
 

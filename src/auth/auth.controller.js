@@ -23,9 +23,12 @@ const register = async (req, res) => {
     passwordHistory: [hashedPassword],
   });
 
-  logger.info("User registered", { userID: user._id });
+  logger.info("User registered", { userId: user._id });
 
-  const accessToken = signAccessToken({ userID: user._id });
+  const accessToken = signAccessToken({
+    userId: user._id,
+    accountType: user.accountType,
+  });
 
   res.json({
     success: true,
@@ -54,7 +57,10 @@ const login = async (req, res) => {
     );
   }
 
-  const accessToken = signAccessToken({ userId: user._id });
+  const accessToken = signAccessToken({
+    userId: user._id,
+    accountType: user.accountType,
+  });
 
   res.json({
     success: true,
@@ -72,7 +78,7 @@ const forgotPassword = async (req, res) => {
     //
 
     return res.json({
-      sucess: true,
+      success: true,
       message: "If the email exists, a verification code has been sent",
     });
   }
