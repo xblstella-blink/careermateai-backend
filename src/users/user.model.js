@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    deleteAt: { type: Date },
   },
   {
     timestamps: true,

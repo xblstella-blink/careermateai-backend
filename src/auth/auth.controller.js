@@ -5,7 +5,6 @@ const logger = require("../utils/logger");
 const { hashPassword, comparePassword } = require("../utils/password");
 const UnauthorizedException = require("../exceptions/unauthorized.exception");
 const crypto = require("crypto");
-const badRequestException = require("../exceptions/badRequest.exception");
 const ValidationException = require("../exceptions/validation.exception");
 
 const register = async (req, res) => {
@@ -49,6 +48,11 @@ const login = async (req, res) => {
       "Invalid email or password. Please try again.",
     );
   }
+  if (user.deleteAt) {
+    throw new UnauthorizedException(
+      "Account has been deleted, please contact support team",
+    );
+  }
 
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch) {
@@ -81,6 +85,11 @@ const forgotPassword = async (req, res) => {
       success: true,
       message: "If the email exists, a verification code has been sent",
     });
+  }
+  if (user.deleteAt) {
+    throw new UnauthorizedException(
+      "Account has been deleted, please contact support team",
+    );
   }
   const code = Math.random().toString().slice(2, 8);
   user.resetCode = code;

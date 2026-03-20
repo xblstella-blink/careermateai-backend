@@ -63,5 +63,50 @@ const updateMyPassword = async (req, res) => {
     message: "Password updated successfully",
   });
 };
+const deleteUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new NotFoundException("User not found");
+  }
+  if (user.accountType !== "user") {
+    throw new BadRequestException("Invalid account type");
+  }
+  if (user.deleteAt) {
+    throw new BadRequestException("User is already deleted");
+  }
 
-module.exports = { getMe, updateMe, updateMyPassword };
+  user.deleteAt = new Date();
+  await user.save();
+
+  logger.info("User soft deleted", {
+    userId: user._id,
+    operator: req.user.userId,
+  });
+
+  res.json({
+    success: true,
+    message: "user soft deleted",
+  });
+};
+
+const restoreUser = async (req, res) => {
+  const user = await User.findOne({
+    _id: req.params.id,
+    deleteAt: { $ne: null },
+  });
+
+  if (!user) {
+    throw new NotFoundException("Deleted user not found");
+  }
+  user.deleteAt = null;
+  await user.save();
+
+  logger.info("User restored", { userId: user._id, operator: req.user.userId });
+
+  res.json({
+    success: true,
+    message: "user restored",
+  });
+};
+
+module.exports = { getMe, updateMe, updateMyPassword, deleteUser, restoreUser };
