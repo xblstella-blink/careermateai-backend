@@ -25,7 +25,7 @@ const getPresignedUploadUrl = async (req, res) => {
     maxFileSize,
   );
 
-  logger.info("Presinged upload URL generated, {useId, category, fileKey}");
+  logger.info("Presigned upload URL generated, {useId, category, fileKey}");
 
   res.json({
     success: true,

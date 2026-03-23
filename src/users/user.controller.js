@@ -1,7 +1,11 @@
+const { success, config } = require("zod");
 const BadRequestException = require("../exceptions/badRequest.exception");
+const ForbiddenException = require("../exceptions/forbidden.exception");
 const NotFoundException = require("../exceptions/notFound.exception");
+const { ALLOWED_TYPES, MAX_FILE_SIZE } = require("../upload/constants");
 const logger = require("../utils/logger");
 const { comparePassword, hashPassword } = require("../utils/password");
+const { validateS3File, deleteObject } = require("../utils/s3");
 const User = require("./user.model");
 
 const getMe = async (req, res) => {
@@ -24,6 +28,44 @@ const updateMe = async (req, res) => {
     runValidators: true,
   }).exec();
   res.json({ success: true, data: user });
+};
+
+const updateAvatar = async (req, res) => {
+  const { fileKey } = req.body;
+  const userId = req.user.userId;
+
+  if (!fileKey.startsWith(`avatar/${userId}/`)) {
+    throw new ForbiddenException("Invalid file key");
+  }
+  await validateS3File(fileKey, {
+    allowedTypes: ALLOWED_TYPES["avatar"],
+    maxFileSize: MAX_FILE_SIZE["avatar"],
+  });
+  const user = await User.findById(userId).exec();
+  const oldAvatarKey = user.avatar;
+
+  user.avatar = fileKey;
+  await user.save();
+
+  if (oldAvatarKey) {
+    try {
+      await deleteObject(oldAvatarKey);
+    } catch (e) {
+      logger.warn("Failed to delete old avatar", {
+        oldAvatarKey,
+        error: e.message,
+      });
+    }
+  }
+
+  let avatar = fileKey;
+  if (config.CLOUDFRONT_DOMAIN) {
+    avatar = `${config.CLOUDFRONT_DOMAIN}/${avatar}`;
+  }
+  res.json({
+    success: true,
+    data: { avatar },
+  });
 };
 
 const updateMyPassword = async (req, res) => {
@@ -109,4 +151,11 @@ const restoreUser = async (req, res) => {
   });
 };
 
-module.exports = { getMe, updateMe, updateMyPassword, deleteUser, restoreUser };
+module.exports = {
+  getMe,
+  updateMe,
+  updateMyPassword,
+  deleteUser,
+  restoreUser,
+  updateAvatar,
+};

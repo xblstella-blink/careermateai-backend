@@ -73,7 +73,7 @@ const MAGIC_SIGNATURES = {
   "application/pdf": [0x25, 0x50, 0x44, 0x46],
 };
 
-const detectMimeTyppe = (buffer) => {
+const detectMimeType = (buffer) => {
   for (const [mime, sig] of Object.entries(MAGIC_SIGNATURES)) {
     if (sig.every((byte, i) => buffer[i] === byte)) {
       return mime;
@@ -82,9 +82,9 @@ const detectMimeTyppe = (buffer) => {
   return null;
 };
 
-const verifyFileCotent = async (fileKey, allowedTypes) => {
+const verifyFileContent = async (fileKey, allowedTypes) => {
   const buffer = await getObjectBytes(fileKey);
-  const actualMime = detectMimeTyppe(buffer);
+  const actualMime = detectMimeType(buffer);
   if (!actualMime || !allowedTypes.includes(actualMime)) {
     return { valid: false, detected: actualMime || "unknown" };
   }
@@ -110,7 +110,7 @@ const validateS3File = async (fileKey, { allowedTypes, maxFileSize }) => {
     throw new BadRequestException(`File exceeds max file size: ${maxFileSize}`);
   }
 
-  const { valid, detected } = await verifyFileCotent(fileKey, allowedTypes);
+  const { valid, detected } = await verifyFileContent(fileKey, allowedTypes);
   if (!valid) {
     throw new BadRequestException(
       `File content does not match declared types. Detected ${detected}`,

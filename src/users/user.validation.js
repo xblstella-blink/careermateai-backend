@@ -7,7 +7,6 @@ const updateMeSchema = z.object({
   role: z.enum(["Student", "Other"]).optional(),
   field: z.enum(["FE", "BE"]).optional(),
   goal: z.string().trim().optional(),
-  avatar: z.string().optional(),
 });
 
 const updateMyPasswordSchema = z.object({
@@ -15,7 +14,12 @@ const updateMyPasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 
+const updateAvatarSchema = z.object({
+  fileKey: z.string().min(1),
+});
+
 module.exports = {
   updateMeSchema,
   updateMyPasswordSchema,
+  updateAvatarSchema,
 };

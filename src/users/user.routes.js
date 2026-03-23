@@ -1,8 +1,12 @@
 const { Router } = require("express");
 const userController = require("./user.controller");
 const authGuard = require("../middleware/authGuard.middleware");
-const { updateMeSchema, updateMyPasswordSchema } = require("./user.validation");
-const validate = require("../middleware/validation.middleware");
+const {
+  updateMeSchema,
+  updateMyPasswordSchema,
+  updateAvatarSchema,
+} = require("./user.validation");
+const { validate } = require("../middleware/validation.middleware");
 const { roleGuard } = require("../middleware/roleGuard.middleware");
 
 const userRouter = Router();
@@ -11,6 +15,11 @@ userRouter.use(authGuard);
 
 userRouter.get("/me", userController.getMe);
 userRouter.patch("/me", validate(updateMeSchema), userController.updateMe);
+userRouter.post(
+  "/me/avatar",
+  validate(updateAvatarSchema),
+  userController.updateAvatar,
+);
 userRouter.patch(
   "/me/password",
   validate(updateMyPasswordSchema),
