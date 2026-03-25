@@ -1,15 +1,17 @@
-const { includes } = require("zod");
 const BadRequestException = require("../exceptions/badRequest.exception");
 const {
   generatePresignedUpload,
   generatePresignedGetUrl,
 } = require("../utils/s3");
+
 const { ALLOWED_TYPES, MAX_FILE_SIZE, EXTENSION_MAP } = require("./constants");
 const crypto = require("crypto");
 const ForbiddenException = require("../exceptions/forbidden.exception");
+const logger = require("../utils/logger");
 
 const getPresignedUploadUrl = async (req, res) => {
   const { contentType, category } = req.body;
+  const userId = req.user.userId;
 
   const allowedTypes = ALLOWED_TYPES[category];
   if (!allowedTypes.includes(contentType)) {
@@ -17,7 +19,7 @@ const getPresignedUploadUrl = async (req, res) => {
   }
   const maxFileSize = MAX_FILE_SIZE[category];
   const ext = EXTENSION_MAP[contentType] || "";
-  const fileKey = `${category}/${req.user.userId}/${crypto.randomUUID()}/${ext}`;
+  const fileKey = `${category}/${req.user.userId}/${crypto.randomUUID()}${ext}`;
 
   const { url, fields, expireIn } = await generatePresignedUpload(
     fileKey,
@@ -25,7 +27,7 @@ const getPresignedUploadUrl = async (req, res) => {
     maxFileSize,
   );
 
-  logger.info("Presigned upload URL generated, {useId, category, fileKey}");
+  logger.info("Presigned upload URL generated", { userId, category, fileKey });
 
   res.json({
     success: true,

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const config = require("../utils/config");
 
 const userSchema = new mongoose.Schema(
   {
@@ -52,6 +53,9 @@ const userSchema = new mongoose.Schema(
         delete ret.password;
         delete ret.__v;
         delete ret.passwordHistory;
+        if (config.CLOUDFRONT_DOMAIN) {
+          ret.avatar = `https://${config.CLOUDFRONT_DOMAIN}/${ret.avatar}`;
+        }
       },
     },
   },

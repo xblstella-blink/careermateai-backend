@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { required } = require("zod/mini");
 
 const resumeSchema = new mongoose.Schema(
   {

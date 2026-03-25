@@ -1,4 +1,4 @@
-const { success, config } = require("zod");
+const config = require("../utils/config");
 const BadRequestException = require("../exceptions/badRequest.exception");
 const ForbiddenException = require("../exceptions/forbidden.exception");
 const NotFoundException = require("../exceptions/notFound.exception");
@@ -58,13 +58,9 @@ const updateAvatar = async (req, res) => {
     }
   }
 
-  let avatar = fileKey;
-  if (config.CLOUDFRONT_DOMAIN) {
-    avatar = `${config.CLOUDFRONT_DOMAIN}/${avatar}`;
-  }
   res.json({
     success: true,
-    data: { avatar },
+    data: { avatar: user.avatar },
   });
 };
 

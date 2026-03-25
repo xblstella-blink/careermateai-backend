@@ -11,7 +11,6 @@ const NotFoundException = require("../exceptions/notFound.exception");
 
 const createResume = async (req, res) => {
   const { fileKey, fileName } = req.body;
-
   const userId = req.user.userId;
 
   if (!fileKey.startsWith(`resume/${userId}/`)) {

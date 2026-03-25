@@ -8,9 +8,12 @@ const errorHandler = require("./middleware/error/error.middleware");
 const v1Router = require("./routes");
 
 const app = express();
-app.use(helmet());
-app.use(rateLimit);
+app.set("trust proxy", 2);
 
+app.use(helmet());
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+
+app.use(rateLimit);
 app.use(morgan);
 app.use(cors());
 

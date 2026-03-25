@@ -2,6 +2,7 @@ const {
   S3Client,
   DeleteObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
 } = require("@aws-sdk/client-s3");
 const config = require("./config");
 const { createPresignedPost } = require("@aws-sdk/s3-presigned-post");
@@ -15,7 +16,8 @@ const s3Client = new S3Client({
 });
 
 const generatePresignedUpload = async (fileKey, contentType, maxFileSize) => {
-  createPresignedPost(s3Client, {
+  const expiresIn = 300;
+  const { url, fields } = await createPresignedPost(s3Client, {
     Bucket: config.S3_BUCKET,
     Key: fileKey,
     Conditions: [
@@ -27,20 +29,22 @@ const generatePresignedUpload = async (fileKey, contentType, maxFileSize) => {
     },
     Expires: 300,
   });
-  return { url, fields };
+  return { url, fields, expiresIn };
 };
 
 const generatePresignedGetUrl = async (fileKey) => {
+  const expiresIn = 3600;
   const command = new GetObjectCommand({
     Bucket: config.S3_BUCKET,
-    key: fileKey,
+    Key: fileKey,
   });
   const url = await getSignedUrl(s3Client, command, {
-    expiresIn: 3600,
+    expiresIn,
   });
   return { url, expiresIn };
 };
 
+//get metadata information
 const headObject = async (fileKey) => {
   const command = new HeadObjectCommand({
     Bucket: config.S3_BUCKET,
@@ -97,7 +101,7 @@ const validateS3File = async (fileKey, { allowedTypes, maxFileSize }) => {
     head = await headObject(fileKey);
   } catch (error) {
     if (error.name === "NotFound") {
-      throw new NotFoundException("File not found in S3}");
+      throw new NotFoundException("File not found in S3");
     }
     throw error;
   }

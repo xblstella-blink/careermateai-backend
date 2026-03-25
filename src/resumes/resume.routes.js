@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const authGuard = require("../middleware/authGuard.middleware");
-const { validate } = require("./resume.model");
+const { validate } = require("../middleware/validation.middleware");
 const { createResumeSchema } = require("./resume.validation");
 const resumeController = require("./resume.controller");
 
@@ -8,7 +8,7 @@ const resumeRouter = Router();
 
 resumeRouter.use(authGuard);
 
-resumeRouter.posh(
+resumeRouter.post(
   "/",
   validate(createResumeSchema),
   resumeController.createResume,

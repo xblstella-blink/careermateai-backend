@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const {
   validate,
-  validatQuery,
+  validateQuery,
 } = require("../middleware/validation.middleware");
 const authGuard = require("../middleware/authGuard.middleware");
 const uploadController = require("./upload.controller");
@@ -21,7 +21,7 @@ uploadRouter.post(
 
 uploadRouter.get(
   "/presigned-url",
-  validatQuery(presignedDownloadSchema),
+  validateQuery(presignedDownloadSchema),
   uploadController.getPresignedDownloadUrl,
 );
 

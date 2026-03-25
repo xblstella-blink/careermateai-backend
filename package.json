@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "dotenv": "^17.3.1",
     "nodemon": "^3.1.14"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1014.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.0",
     "helmet": "^8.1.0",
@@ -29,5 +30,8 @@
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
     "zod": "^4.3.6"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }
